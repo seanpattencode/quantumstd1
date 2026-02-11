@@ -2,7 +2,13 @@ import argparse
 import copy
 import numpy as np
 import os
+import pathlib
 os.environ['TF_USE_LEGACY_KERAS'] = '1'
+# Auto-detect pip-installed NVIDIA CUDA libs for GPU support
+_nvidia_dir = pathlib.Path(__file__).resolve().parent / '.venv' / 'lib'
+for _lib in _nvidia_dir.rglob('nvidia/*/lib'):
+    if _lib.is_dir():
+        os.environ['LD_LIBRARY_PATH'] = str(_lib) + ':' + os.environ.get('LD_LIBRARY_PATH', '')
 import random
 from sklearn.utils import shuffle
 import tensorflow.compat.v1 as tf
