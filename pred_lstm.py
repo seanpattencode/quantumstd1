@@ -2,22 +2,12 @@ import argparse
 import copy
 import numpy as np
 import os
+os.environ['TF_USE_LEGACY_KERAS'] = '1'
 import random
 from sklearn.utils import shuffle
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_eager_execution()
 from time import time
-try:
-    from tensorflow.python.ops.nn_ops import leaky_relu
-except ImportError:
-    from tensorflow.python.framework import ops
-    from tensorflow.python.ops import math_ops
-
-
-    def leaky_relu(features, alpha=0.2, name=None):
-        with ops.name_scope(name, "LeakyRelu", [features, alpha]):
-            features = ops.convert_to_tensor(features, name="features")
-            alpha = ops.convert_to_tensor(alpha, name="alpha")
-            return math_ops.maximum(alpha * features, features)
 
 from load import load_cla_data
 from evaluator import evaluate
@@ -142,7 +132,7 @@ class AWLSTM:
                 tf.float32, [None, self.paras['seq'], 5]
             )
 
-            self.lstm_cell = tf.contrib.rnn.BasicLSTMCell(
+            self.lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(
                 self.paras['unit']
             )
 
